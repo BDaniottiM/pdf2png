@@ -24,23 +24,26 @@
         display: none;
       }
 
+      button,
       label {
-        background-color: #3498db;
-        color: #fff;
-        padding: 10px 20px;
-        cursor: pointer;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        display: inline-block;
-      }
-
-      button {
         background-color: #3498db;
         color: #fff;
         padding: 10px 20px;
         border: none;
         border-radius: 5px;
         cursor: pointer;
+        margin-bottom: 20px;
+      }
+
+      button {
+        display: inline-block; /* Torna os botões elementos inline-block */
+        width: 50%; /* Define a largura dos botões */
+        height: 40px;
+      }
+
+      label {
+        display: inline-block; /* Torna os rótulos elementos inline-block */
+        width: 48%; /* Define a largura dos rótulos */
       }
 
       button:hover {
