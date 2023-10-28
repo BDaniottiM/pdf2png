@@ -1,64 +1,119 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
+    <meta charset="utf-8" />
     <title>Conversor de PDF para PNG</title>
+    <!-- Estilos CSS para melhorar a aparência -->
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+      }
+
+      #container {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f5f5f5;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      }
+
+      input[type="file"] {
+        display: none;
+      }
+
+      label {
+        background-color: #3498db;
+        color: #fff;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        display: inline-block;
+      }
+
+      button {
+        background-color: #3498db;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #2980b9;
+      }
+
+      #output img {
+        max-width: 100%;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container">
+      <h2>Conversor de PDF para PNG</h2>
+      <label for="pdfInput">Escolher um arquivo PDF</label>
+      <input type="file" id="pdfInput" accept=".pdf" />
+      <button id="convertButton">Converter para PNG</button>
+      <div id="output"></div>
+    </div>
+
     <!-- Inclua as dependências pdf.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
-</head>
-<body>
-    <input type="file" id="pdfInput" accept=".pdf">
-    <button id="convertButton">Converter para PNG</button>
-
-    <div id="output"></div>
 
     <script>
-        document.getElementById('convertButton').addEventListener('click', function() {
-            var pdfInput = document.getElementById('pdfInput');
-            var output = document.getElementById('output');
-            var file = pdfInput.files[0];
+      document
+        .getElementById("convertButton")
+        .addEventListener("click", function () {
+          var pdfInput = document.getElementById("pdfInput");
+          var output = document.getElementById("output");
+          var file = pdfInput.files[0];
 
-            if (file) {
-                var fileReader = new FileReader();
+          if (file) {
+            var fileReader = new FileReader();
 
-                fileReader.onload = function() {
-                    var typedarray = new Uint8Array(this.result);
-                    convertPDFToPNG(typedarray);
-                };
+            fileReader.onload = function () {
+              var typedarray = new Uint8Array(this.result);
+              convertPDFToPNG(typedarray);
+            };
 
-                fileReader.readAsArrayBuffer(file);
-            }
+            fileReader.readAsArrayBuffer(file);
+          }
         });
 
-        function convertPDFToPNG(pdfData) {
-            pdfjsLib.getDocument(pdfData).promise.then(function(pdf) {
-                var pageNum = 1; // Página a ser convertida (altere conforme necessário)
+      function convertPDFToPNG(pdfData) {
+        pdfjsLib.getDocument(pdfData).promise.then(function (pdf) {
+          var pageNum = 1; // Página a ser convertida (altere conforme necessário)
 
-                pdf.getPage(pageNum).then(function(page) {
-                    var canvas = document.createElement('canvas');
-                    var context = canvas.getContext('2d');
-                    var viewport = page.getViewport({ scale: 1.5 });
+          pdf.getPage(pageNum).then(function (page) {
+            var canvas = document.createElement("canvas");
+            var context = canvas.getContext("2d");
+            var viewport = page.getViewport({ scale: 1.5 });
 
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
 
-                    var renderContext = {
-                        canvasContext: context,
-                        viewport: viewport,
-                    };
+            var renderContext = {
+              canvasContext: context,
+              viewport: viewport,
+            };
 
-                    page.render(renderContext).promise.then(function() {
-                        var pngDataUrl = canvas.toDataURL('image/png');
-                        var image = new Image();
-                        image.src = pngDataUrl;
+            page.render(renderContext).promise.then(function () {
+              var pngDataUrl = canvas.toDataURL("image/png");
+              var image = new Image();
+              image.src = pngDataUrl;
 
-                        // Exiba a imagem PNG ou faça o que preferir
-                        var output = document.getElementById('output');
-                        output.innerHTML = '';
-                        output.appendChild(image);
-                    });
-                });
+              // Exiba a imagem PNG ou faça o que preferir
+              var output = document.getElementById("output");
+              output.innerHTML = "";
+              output.appendChild(image);
             });
-        }
+          });
+        });
+      }
     </script>
-</body>
+  </body>
 </html>
