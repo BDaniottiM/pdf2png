@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Conversor de PDF para PNG</title>
+    <!-- Inclua as dependências pdf.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+</head>
+<body>
+    <input type="file" id="pdfInput" accept=".pdf">
+    <button id="convertButton">Converter para PNG</button>
+
+    <div id="output"></div>
+
+    <script>
+        document.getElementById('convertButton').addEventListener('click', function() {
+            var pdfInput = document.getElementById('pdfInput');
+            var output = document.getElementById('output');
+            var file = pdfInput.files[0];
+
+            if (file) {
+                var fileReader = new FileReader();
+
+                fileReader.onload = function() {
+                    var typedarray = new Uint8Array(this.result);
+                    convertPDFToPNG(typedarray);
+                };
+
+                fileReader.readAsArrayBuffer(file);
+            }
+        });
+
+        function convertPDFToPNG(pdfData) {
+            pdfjsLib.getDocument(pdfData).promise.then(function(pdf) {
+                var pageNum = 1; // Página a ser convertida (altere conforme necessário)
+
+                pdf.getPage(pageNum).then(function(page) {
+                    var canvas = document.createElement('canvas');
+                    var context = canvas.getContext('2d');
+                    var viewport = page.getViewport({ scale: 1.5 });
+
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+
+                    var renderContext = {
+                        canvasContext: context,
+                        viewport: viewport,
+                    };
+
+                    page.render(renderContext).promise.then(function() {
+                        var pngDataUrl = canvas.toDataURL('image/png');
+                        var image = new Image();
+                        image.src = pngDataUrl;
+
+                        // Exiba a imagem PNG ou faça o que preferir
+                        var output = document.getElementById('output');
+                        output.innerHTML = '';
+                        output.appendChild(image);
+                    });
+                });
+            });
+        }
+    </script>
+</body>
+</html>
